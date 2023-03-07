@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyledButton } from "./StyledBoard";
+import { StyledButton, StyledTaskDiv, StyledTodoName } from "./StyledBoard";
 
 interface IProp {
     taskName: string;
@@ -8,13 +8,14 @@ interface IProp {
     updateTaskName: (e: any, id: number) => void;
     id: number;
     handleDeleteTodoItem: (id: number) => void;
+    handleDragStart: (e: React.DragEvent<HTMLDivElement>, taskId: number) => void;
 }
 
 const Task: React.FC<IProp> = (prop) => {
-    const { taskName, isEditTask , setIsEditTask, updateTaskName, id, handleDeleteTodoItem} = prop;
+    const { taskName, isEditTask , setIsEditTask, updateTaskName, id, handleDeleteTodoItem, handleDragStart} = prop;
     const [todoName, setTodoName] = useState(taskName);
     return (
-        <div style={{display: 'flex'}} draggable={true}>
+        <StyledTaskDiv draggable={true} onDragStart= {(e) => handleDragStart(e, id)}>
             {isEditTask ? (
                 <div>
                     <input  defaultValue={todoName} onKeyDown={(e) => {
@@ -25,12 +26,12 @@ const Task: React.FC<IProp> = (prop) => {
                     </div>
             ) : (
                 <>
-                <h5>{taskName}</h5>
+                <StyledTodoName>{taskName}</StyledTodoName>
                 <StyledButton onClick={() => setIsEditTask(true)}>Edit</StyledButton>
-                <StyledButton onClick={() => handleDeleteTodoItem(id)}>Delete</StyledButton>
+                <StyledButton onClick={() => handleDeleteTodoItem(id)} style={{marginLeft: '20px'}}>Delete</StyledButton>
                 </>
             )}
-        </div>
+        </StyledTaskDiv>
     )
 }
 

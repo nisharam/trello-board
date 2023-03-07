@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyledCard } from "./StyledBoard";
+import { StyledCard, StyledInput } from "./StyledBoard";
 import Task from "./Task";
 
 interface IProps {
@@ -23,7 +23,6 @@ const TaskCard: React.FC<IProps> = (props) => {
                 todoItem: event.target.value,
                 id: count++,
             };
-            console.log('todod is', todoItem);
             setTodos((prev: any) => [...prev, todoItem]);
 
         }
@@ -46,20 +45,30 @@ const handleDeleteTodoItem = (id: number) => {
       setTodos(deletedTask);
 }
 
+const handleDragStart = (e: React.DragEvent<HTMLDivElement>, taskId: number) => {
+    e.dataTransfer.setData('card', `${taskId}`);
+}
+
     
     return (
         <StyledCard>
             {header ? (
-                isTitleEditVisible ? (<input onKeyDown={(e) => handleSaveBoardTitle(e, id)} />) : (<h3 onDoubleClick={ () => setIsTitleEditVisible(true)}>{header}</h3>)
+                isTitleEditVisible ? (<input onKeyDown={(e) => handleSaveBoardTitle(e, id)} defaultValue={header} />) : (<h3 onDoubleClick={ () => setIsTitleEditVisible(true)}>{header}</h3>)
             ): (
                 <h3>Create  a default task</h3>
             )}
-            <input onKeyDown={ (e) => handleAddTodo(e)} />
-            <button onClick={() => handleDeleteTask(id)}> Delete</button>
             {todos.map((todo: any) => (
                 <Task taskName={todo.todoItem} isEditTask={isEditTask} setIsEditTask={setIsEditTask} updateTaskName={updateTaskName} id={todo.id}
-                handleDeleteTodoItem={handleDeleteTodoItem} />
-            ))}
+                handleDeleteTodoItem={handleDeleteTodoItem} handleDragStart={handleDragStart} />
+            ))} 
+                    <div>
+            <span>
+            <StyledInput onKeyDown={ (e) => handleAddTodo(e)} />
+             Add
+            </span>
+            </div>
+
+            <button onClick={() => handleDeleteTask(id)} style={{marginTop: '20px'}}> Delete</button>
         </StyledCard>
     )
 }
